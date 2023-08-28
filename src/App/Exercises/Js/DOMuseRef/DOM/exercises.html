@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exercise: Click Me Button and Toggle Div and Add New Div</title>
+  </head>
+  <body>
+    <!-- Exercise 1: Create a button that changes text when clicked -->
+    <button id="myButton">Click me</button>
+
+    <script>
+      // Get the button element by its ID
+      const myButton = document.getElementById('myButton');
+
+      // Add a click event listener to the button
+      myButton.addEventListener('click', () => {
+        // Change the button's text content when it's clicked
+        myButton.textContent = "I've been clicked";
+      });
+    </script>
+
+    <!-- Exercise 2: Create a button to toggle the visibility of a div -->
+    <!-- Create a button with an ID for easy selection -->
+    <button id="toggleButton">Div changes</button>
+
+    <!-- Create a div initially visible -->
+    <div id="myDiv">Click on the button and I will change states</div>
+
+    <script>
+      // Get the button and div elements by their IDs
+      const toggleButton = document.getElementById('toggleButton');
+      const myDiv = document.getElementById('myDiv');
+
+      // Add a click event listener to the toggle button
+      toggleButton.addEventListener('click', () => {
+        // Toggle the visibility of the div
+        if (myDiv.style.display === 'none' || myDiv.style.display === '') {
+          myDiv.style.display = 'block';
+        } else {
+          myDiv.style.display = 'none';
+        }
+      });
+    </script>
+
+    <!-- Exercise 3: Create a button to add a new div dynamically -->
+    <button id="addDivButton">Add Div</button>
+
+    <script>
+      // Get the button element for adding a new div
+      const addDivButton = document.getElementById('addDivButton');
+
+      // Add a click event listener to the button
+      addDivButton.addEventListener('click', () => {
+        // Create a new div element
+        const newDiv = document.createElement('div');
+        newDiv.textContent = "There's plenty of us";
+
+        // Append the new div to the body
+        document.body.appendChild(newDiv);
+      });
+    </script>
+  </body>
+</html>

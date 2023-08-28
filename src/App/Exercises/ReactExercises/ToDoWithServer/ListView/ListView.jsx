@@ -15,15 +15,43 @@ export const ListView = ({ toggleAddTaskView }) => {
   const [editTask, setEditTask] = useState(null);
 
   const handleVectorIconClick = (index) => {
-    // Check if the box is already selected
-    if (selectedBoxes.includes(index)) {
-      // If it's selected, remove it from the selectedBoxes array
-      setSelectedBoxes(selectedBoxes.filter((boxIndex) => boxIndex !== index));
-    } else {
-      // If it's not selected, add it to the selectedBoxes array
-      setSelectedBoxes([...selectedBoxes, index]);
-    }
+    const updatedTasks = [...externalTodo];
+    updatedTasks[index].isDone = !updatedTasks[index].isDone;
+
+    // Update doneDate based on isDone
+    updatedTasks[index].doneDate = updatedTasks[index].isDone
+      ? new Date().toLocaleString()
+      : null;
+
+    // Send a PUT request to update the task on the server
+    fetch(`http://localhost:3333/api/todo/${updatedTasks[index].id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedTasks[index]),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Update the task in externalTodo with the edited data
+        setExternalTodo(updatedTasks);
+
+        // Update the local state with the new completed status
+        setSelectedBoxes((prevSelectedBoxes) =>
+          updatedTasks[index].isDone
+            ? [...prevSelectedBoxes, index]
+            : prevSelectedBoxes.filter((boxIndex) => boxIndex !== index)
+        );
+      })
+      .catch((error) => {
+        console.error('Update error:', error);
+        // Handle any errors that occurred during the update
+      });
   };
+
   const handleDeleteTask = (taskId) => {
     // Send a DELETE request to your server to delete the task with taskId
     fetch(`http://localhost:3333/api/todo/${taskId}`, {
@@ -144,7 +172,7 @@ export const ListView = ({ toggleAddTaskView }) => {
           <div
             className={`to-do-list ${
               selectedBoxes.includes(index) ? 'clicked' : ''
-            }`}
+            } ${task.isDone ? 'completed' : ''}`} // Add a 'done' class for completed tasks
             key={task.id}
           >
             {/* Icons */}

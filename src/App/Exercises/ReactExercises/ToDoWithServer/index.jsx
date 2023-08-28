@@ -1,13 +1,13 @@
-// ToDoWithServer.js
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles.css';
 import { ListView } from './ListView/ListView';
 import { AddTaskView } from './AddTaskView/AddTaskView';
+import { TasksDoneView } from './TasksDoneView/TasksDoneView';
 
 export const ToDoWithServer = () => {
   const [isAddTaskViewVisible, setIsAddTaskViewVisible] = useState(false);
   const [todo, setTodo] = useState([]); // Initialize the to-do list state
+  const [allTasksDone, setAllTasksDone] = useState(false);
 
   const toggleAddTaskView = () => {
     setIsAddTaskViewVisible(!isAddTaskViewVisible);
@@ -25,6 +25,7 @@ export const ToDoWithServer = () => {
       author: newTask.author,
       note: newTask.note,
       createdAt: new Date().toLocaleString(),
+      isDone: false, // Initialize isDone to false for new tasks
     };
 
     // Update the to-do list state with the new task
@@ -34,11 +35,23 @@ export const ToDoWithServer = () => {
     setIsAddTaskViewVisible(false);
   };
 
+  useEffect(() => {
+    // Check if all tasks are completed when the todo list changes
+    const areAllTasksCompleted = () => {
+      return todo.length > 0 && todo.every((task) => task.isDone);
+    };
+
+    // Update the allTasksDone state
+    setAllTasksDone(areAllTasksCompleted());
+  }, [todo]);
+
   return (
     <div>
-      <h1 className="header">TO DO</h1>
+      <h1>TO DO</h1>
 
-      {isAddTaskViewVisible ? (
+      {allTasksDone ? (
+        <TasksDoneView />
+      ) : isAddTaskViewVisible ? (
         <AddTaskView
           toggleAddTaskView={toggleAddTaskView}
           goBackToListView={handleGoBackToListView}
